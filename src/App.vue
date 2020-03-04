@@ -13,7 +13,7 @@
 
       <v-spacer></v-spacer>
 
-      <AddWorker></AddWorker>
+      <span>Табель учета</span>
 
     </v-app-bar>
 
@@ -32,7 +32,6 @@
           <Obj />          
           <Wall />
         
-
           <v-list-item>
             <v-list-item-icon>
               <v-icon>mdi-file-excel</v-icon>
@@ -62,7 +61,7 @@
 
 <script>
 import Workers from './components/worker/workers'
-import AddWorker from './components/worker/addworker'
+
 import Empl from './components/ref/empl'
 import Obj from './components/ref/obj'
 import Wall from './components/ref/wall'
@@ -70,7 +69,7 @@ export default {
   name: 'App',
 
   components: {
-    Workers, AddWorker, Empl, Obj, Wall
+    Workers, Empl, Obj, Wall
   },
   created(){
     this.$root.connectDB(function(db){

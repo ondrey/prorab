@@ -1,6 +1,11 @@
 <template>
 
 <div>
+  <div style="text-align:right">
+    Добвать отчет по сотруднику
+    <AddWorker @close="get_list"></AddWorker>
+  </div>
+  
   <v-simple-table dense>
     <template v-slot:default>
       <thead>
@@ -13,13 +18,13 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="item in desserts" :key="item.name">
+        <tr v-for="item in desserts" :key="item.key">
           <td>{{ item.date }}</td>
           <td>{{ item.name }}</td>
           <td>{{ item.start }}</td>
           <td>{{ item.finish }}</td>
           <td>
-              <EditWorker :nameEmp="item.name"/>
+              <EditWorker @close="get_list" :nameEmp="item.name" :key_plan="item.key"/>
           </td>
         </tr>
       </tbody>
@@ -32,10 +37,11 @@
 
 <script>
 import EditWorker from '../worker/editworker'
+import AddWorker from '../worker/addworker'
  export default {
      
      components:{
-         EditWorker
+         EditWorker, AddWorker
      },
 
     data () {
@@ -48,57 +54,23 @@ import EditWorker from '../worker/editworker'
     },
     methods:{
         get_list(){
-            this.desserts = [
-          {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-                  {
-            name: 'Frozen Yogurt',
-            start: '8:00',
-            finish: '9:00',
-            date: '12.02.2020'
-          },
-        ]
-        }
+          this.$root.connectDB(db => {
+            this.desserts = []
+            let tx = db.transaction(['Plan'], 'readwrite')
+            let plan = tx.objectStore('Plan')
+            plan.openCursor().onsuccess = this.set_list       
+          })          
+        },
+        set_list(event){
+          const cursor = event.target.result
+          if(cursor) {    
+            
+            if (cursor.value.finish == "")        
+              this.desserts.push(cursor.value)
+              cursor.continue()
+          }  
+        },
+
     }
   }
 </script>

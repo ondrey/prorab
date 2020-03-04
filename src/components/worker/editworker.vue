@@ -17,7 +17,7 @@
           <v-toolbar-title>Редактирование</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="dialog = false">Сохранить</v-btn>
+            <v-btn dark text @click="update">Сохранить</v-btn>
           </v-toolbar-items>
         </v-toolbar>
 
@@ -71,15 +71,41 @@ export default {
     components:{
       AddWall, EditWall
     },
-    props: ['nameEmp'],
+    props: ['nameEmp', 'key_plan'],
     data(){
         return {
             dialog: false,
             pickertime: "17:00",
-            listWall: new Array(200)
+            listWall: new Array(5)
         }
+    },
+    methods:{
+        update(){
+          this.$root.connectDB(db => {
+            this.desserts = []
+            let tx = db.transaction(['Plan'], 'readwrite')
+            let plan = tx.objectStore('Plan')
+            plan.openCursor().onsuccess = this.update_cursor       
+          })          
+        },
+        update_cursor(event){
+          const cursor = event.target.result
+          if(cursor) {    
+            console.log(cursor.value.key , this.key_plan)
+            if (cursor.value.key == this.key_plan) {
+              let curecord = cursor.value
+              curecord.finish = this.pickertime
+              cursor.update(curecord)
+              this.dialog = false
+              this.$emit('close')
+            }        
+            
+            cursor.continue()
+          }  
+        },
     }
 }
+    
 </script>
 
 <style>

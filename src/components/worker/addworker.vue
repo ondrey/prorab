@@ -4,8 +4,8 @@
     <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
       
       <template v-slot:activator="{ on }">
-        <v-btn color="success" v-on="on">
-            <v-icon>mdi-message-plus</v-icon>
+        <v-btn color="success" v-on="on" style="margin:8px;">
+            <v-icon>mdi-message-plus</v-icon> 
         </v-btn>
       </template>
 
@@ -18,7 +18,7 @@
           <v-toolbar-title>Регистрация работ</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="dialog = false">Добавить</v-btn>
+            <v-btn dark text @click="add_record">Добавить</v-btn>
           </v-toolbar-items>
         </v-toolbar>
 
@@ -108,7 +108,32 @@ export default {
           empl.openCursor().onsuccess = this.set_empl_list       
         })
       },
-      add_record(){},
+      add_record(){
+        let list = []
+        this.selectEmp.forEach(el => {
+          list.push({
+            key_empl: el.value,
+            name: el.text,
+            date: this.picker,
+            start: this.pickertime,
+            finish: "",
+            comment: this.comment,
+            epsent: this.epsent
+          })
+        });
+
+        this.$root.add_record('Plan', list)
+
+        this.selectEmp = []
+        this.picker = new Date().toISOString().substr(0, 10)
+        this.pickertime = ""
+        this.comment = ""
+        this.epsent = false
+
+        this.dialog = false 
+
+        this.$emit('close')     
+      },
       set_empl_list(event){
         const cursor = event.target.result
         if(cursor) {
