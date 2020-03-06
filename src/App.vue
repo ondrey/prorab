@@ -11,9 +11,7 @@
 
       </div>
 
-      <v-spacer></v-spacer>
-
-      <span>Табель учета</span>
+      <v-spacer></v-spacer>      
 
     </v-app-bar>
 

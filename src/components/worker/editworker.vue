@@ -1,6 +1,6 @@
 <template>
   
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition">
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" @keydown="refresh_wall_plan">
       
       <template v-slot:activator="{ on }">
             <v-btn color="success" icon v-on="on">
@@ -17,7 +17,8 @@
           <v-toolbar-title>Редактирование</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="update">Сохранить</v-btn>
+            <v-btn dark text @click="update"> <v-icon style="color: darkseagreen;">mdi-marker-check</v-icon> Завершить работу</v-btn>
+
           </v-toolbar-items>
         </v-toolbar>
 
@@ -34,25 +35,21 @@
           </v-list-item>          
         </v-list>
       
-      <AddWall></AddWall>
-      
+      <AddWall :id_empl="key_empl" :datePlan="datePlan"></AddWall>      
 
       <v-list rounded>
-        <v-list-item v-for="k in listWall" :key="k">
+        <v-list-item v-for="k in listWall" :key="k.key">
           <v-list-item-content>
-            Блок / Секция / Стена
+            {{k.text_object}} / {{k.text_wall}}
             <v-list-item-subtitle>
-              8:00 / --:--
+              {{k.start}} / {{k.finish}}
             </v-list-item-subtitle>
           </v-list-item-content>
 
         <v-list-item-action>
-          <v-list-item-action-text>12.02.2020</v-list-item-action-text>
-          
+          <v-list-item-action-text>{{k.datePlan}}</v-list-item-action-text>         
           <EditWall />
-
         </v-list-item-action>
-
         </v-list-item>
 
       </v-list>
@@ -71,13 +68,21 @@ export default {
     components:{
       AddWall, EditWall
     },
-    props: ['nameEmp', 'key_plan'],
+    props: ['nameEmp', 'key_empl', 'datePlan', 'key_plan'],
     data(){
         return {
             dialog: false,
             pickertime: "17:00",
-            listWall: new Array(5)
+            listWall: [],
+            listWall_old: []
         }
+    },
+    watch: {
+      dialog: function (val) {
+        if(val) {
+          this.refresh_wall_plan()
+        }
+      }
     },
     methods:{
         update(){
@@ -98,11 +103,38 @@ export default {
               cursor.update(curecord)
               this.dialog = false
               this.$emit('close')
-            }        
-            
+            }                    
             cursor.continue()
           }  
         },
+
+
+        refresh_wall_plan(){          
+            this.$root.connectDB(db => {
+            
+            this.listWall = []
+            this.listWall_old = []
+
+            let tx = db.transaction(['PlanWall'], 'readwrite')
+            let PlanWall = tx.objectStore('PlanWall')
+            
+            PlanWall.openCursor().onsuccess = this.get_list_wall_plan
+            })            
+        },
+        get_list_wall_plan(){
+          
+          const cursor = event.target.result
+          if(cursor) {     
+            if (cursor.value.key_empl == this.key_empl)                
+              this.listWall.push(cursor.value)
+            else 
+              this.listWall_old.push(cursor.value)
+
+            cursor.continue()
+          }            
+        }
+
+
     }
 }
     

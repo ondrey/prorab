@@ -2,7 +2,12 @@
 
 <div>
   <div style="text-align:right">
-    Добвать отчет по сотруднику
+    <span style="
+    margin: 25px;
+    font-weight: lighter;
+    font-size: xx-large;
+    ">Табель учета рабочего времени</span>
+      
     <AddWorker @close="get_list"></AddWorker>
   </div>
   
@@ -24,12 +29,47 @@
           <td>{{ item.start }}</td>
           <td>{{ item.finish }}</td>
           <td>
-              <EditWorker @close="get_list" :nameEmp="item.name" :key_plan="item.key"/>
+              <EditWorker @close="get_list" :nameEmp="item.name" :key_empl="item.key_empl" :datePlan="item.date" :key_plan="item.key"/>
           </td>
         </tr>
       </tbody>
     </template>
   </v-simple-table>
+
+  
+  <p style="
+    margin: 25px;
+    font-weight: lighter;
+    font-size: xx-large;
+    color:cadetblue;
+    ">Завершенные:</p>
+  <v-simple-table dense style="
+    background-color: cornsilk;
+    color: cadetblue;
+    ">
+    
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th class="text-left">Дата</th>  
+          <th class="text-left">Сотруд.</th>
+          <th class="text-left">Начало</th>
+          <th class="text-left">Финиш</th>
+          <th class="text-left">Комментарий</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="item in desserts_old" :key="item.key">
+          <td>{{ item.date }}</td>
+          <td>{{ item.name }}</td>
+          <td>{{ item.start }}</td>
+          <td>{{ item.finish }}</td>
+          <td>{{ item.comment }}</td>
+        </tr>
+      </tbody>
+    </template>
+  </v-simple-table>
+
 
 </div>
 
@@ -47,6 +87,7 @@ import AddWorker from '../worker/addworker'
     data () {
       return {
         desserts: [],
+        desserts_old: []
       }
     },
     created(){
@@ -63,11 +104,14 @@ import AddWorker from '../worker/addworker'
         },
         set_list(event){
           const cursor = event.target.result
-          if(cursor) {    
-            
-            if (cursor.value.finish == "")        
+          if(cursor) {           
+            if(cursor.value.finish) {
+              this.desserts_old.push(cursor.value)
+            } else {
               this.desserts.push(cursor.value)
-              cursor.continue()
+            }
+            
+            cursor.continue()
           }  
         },
 
