@@ -7,7 +7,7 @@
             <v-list-item-icon>
               <v-icon>mdi-account-box</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Сотрудник</v-list-item-title>
+            <v-list-item-title>Сотрудники</v-list-item-title>
           </v-list-item>
       </template>
 

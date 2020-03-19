@@ -44,8 +44,31 @@
             type="number"
             style="width:30%; margin-left:8px; float:left;"
             ></v-text-field>
-         
-
+      <br />
+            <v-text-field
+            v-model="vstoun"
+            label="Кол-во кирпича"
+            type="number"
+            style="width:20%; margin-left:8px; float:left;"
+            ></v-text-field>              
+            <v-text-field
+            v-model="v2"
+            label="М2"
+            type="number"
+            style="width:20%; margin-left:8px; float:left;"
+            ></v-text-field>          
+            <v-text-field
+            v-model="v3"
+            label="М3"
+            type="number"
+            style="width:20%; margin-left:8px; float:left;"
+            ></v-text-field>                   
+            <v-text-field
+            v-model="chch"
+            label="Норма. часов"
+            type="number"
+            style="width:20%; margin-left:8px; float:left;"
+            ></v-text-field>    
             <v-btn width="100%" color="success" @click="add_click">Добавить</v-btn>
 
         </v-card>
@@ -55,9 +78,9 @@
       <v-list>
         <v-list-item v-for="k in list" :key="k.id">
           <v-list-item-content>
-            Стена № {{k.wallnum}} 
+            Литер:{{k.liter}} / Блок-секция:{{k.bloksec}} / Стена № {{k.wallnum}} 
             <v-list-item-subtitle>
-            Литер:{{k.liter}} / Блок-секция:{{k.bloksec}}
+            {{k.vstoun}} шт., {{k.v2}} м2., {{k.v3}} м3., {{k.chch}} чч.. 
             </v-list-item-subtitle>
           </v-list-item-content>
 
@@ -87,15 +110,27 @@ export default {
         return {
             dialog: false,
             list: [],
-            liter: 0,
-            bloksec: 0,
-            wallnum: 0
+            liter: null,
+            bloksec: null,
+            wallnum: null,
+
+            vstoun: null,
+            v2: null,
+            v3: null,
+            chch: null
         }
     },
     methods:{      
       add_click(){        
         this.$root.add_record('Walls',[
-          {liter: this.liter, bloksec: this.bloksec, wallnum: this.wallnum},
+          {liter: this.liter, 
+          bloksec: this.bloksec, 
+          wallnum: this.wallnum, 
+          vstoun: this.vstoun,
+          v2: this.v2,
+          v3: this.v3,
+          chch: this.chch
+          },
         ]) 
         this.refresh()       
       },
@@ -107,7 +142,12 @@ export default {
             id:cursor.key, 
             liter:cursor.value.liter, 
             bloksec:cursor.value.bloksec, 
-            wallnum:cursor.value.wallnum
+            wallnum:cursor.value.wallnum,
+
+            vstoun:cursor.value.vstoun,
+            v2:cursor.value.v2,
+            v3:cursor.value.v3,
+            chch:cursor.value.chch
             })   
 
           cursor.continue()

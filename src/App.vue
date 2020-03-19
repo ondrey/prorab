@@ -27,7 +27,7 @@
       >
         <v-subheader>Справочники</v-subheader>
         <v-list-item-group>
-          <Obj />
+          <!-- <Obj /> -->
           <Empl />                   
           <Wall />
         <v-subheader>Действия</v-subheader>
@@ -63,14 +63,14 @@
 import Workers from './components/worker/workers'
 
 import Empl from './components/ref/empl'
-import Obj from './components/ref/obj'
+// import Obj from './components/ref/obj'
 
 import Wall from './components/ref/wall'
 export default {
   name: 'App',
 
   components: {
-    Workers, Obj, Empl, Wall
+    Workers,  Empl, Wall
   },
   created(){
     this.$root.connectDB(function(db){
