@@ -5,9 +5,9 @@
       <template v-slot:activator="{ on }">
           <v-list-item v-on="on">
             <v-list-item-icon>
-              <v-icon>mdi-message-plus</v-icon>
+              <v-icon>mdi-castle</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Стена</v-list-item-title>
+            <v-list-item-title>Стены</v-list-item-title>
           </v-list-item>
       </template>
 
@@ -26,9 +26,25 @@
       
         <v-card style="margin:10px; background-color: greenyellow; padding:8px">
             <v-text-field
-            v-model="nameobj"
-            label="Стена"
+            v-model="liter"
+            label="Литер"
+            type="number"
+            style="width:30%; margin-left:8px; float:left;"
+            ></v-text-field>            
+            <v-text-field
+            v-model="bloksec"
+            label="Блок-секция"
+            type="number"
+            style="width:30%; margin-left:8px; float:left;"
             ></v-text-field>
+
+            <v-text-field
+            v-model="wallnum"
+            label="Стена"
+            type="number"
+            style="width:30%; margin-left:8px; float:left;"
+            ></v-text-field>
+         
 
             <v-btn width="100%" color="success" @click="add_click">Добавить</v-btn>
 
@@ -39,10 +55,10 @@
       <v-list>
         <v-list-item v-for="k in list" :key="k.id">
           <v-list-item-content>
-            {{k.nameobj}} 
-            <!-- <v-list-item-subtitle>
-            {{k.name}}
-            </v-list-item-subtitle> -->
+            Стена № {{k.wallnum}} 
+            <v-list-item-subtitle>
+            Литер:{{k.liter}} / Блок-секция:{{k.bloksec}}
+            </v-list-item-subtitle>
           </v-list-item-content>
 
         <v-list-item-action>
@@ -71,13 +87,15 @@ export default {
         return {
             dialog: false,
             list: [],
-            nameobj:""
+            liter: 0,
+            bloksec: 0,
+            wallnum: 0
         }
     },
     methods:{      
       add_click(){        
         this.$root.add_record('Walls',[
-          {nameobj: this.nameobj},
+          {liter: this.liter, bloksec: this.bloksec, wallnum: this.wallnum},
         ]) 
         this.refresh()       
       },
@@ -87,7 +105,9 @@ export default {
           
           this.list.push({
             id:cursor.key, 
-            nameobj:cursor.value.nameobj, 
+            liter:cursor.value.liter, 
+            bloksec:cursor.value.bloksec, 
+            wallnum:cursor.value.wallnum
             })   
 
           cursor.continue()

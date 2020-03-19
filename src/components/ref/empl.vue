@@ -5,7 +5,7 @@
       <template v-slot:activator="{ on }">
           <v-list-item v-on="on">
             <v-list-item-icon>
-              <v-icon>mdi-message-plus</v-icon>
+              <v-icon>mdi-account-box</v-icon>
             </v-list-item-icon>
             <v-list-item-title>Сотрудник</v-list-item-title>
           </v-list-item>

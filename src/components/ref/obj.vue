@@ -5,9 +5,9 @@
       <template v-slot:activator="{ on }">
           <v-list-item v-on="on">
             <v-list-item-icon>
-              <v-icon>mdi-message-plus</v-icon>
+              <v-icon>mdi-format-section</v-icon>
             </v-list-item-icon>
-            <v-list-item-title>Объект</v-list-item-title>
+            <v-list-item-title>Объекты</v-list-item-title>
           </v-list-item>
       </template>
 

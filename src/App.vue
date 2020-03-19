@@ -25,10 +25,12 @@
         nav
         dense
       >
+        <v-subheader>Справочники</v-subheader>
         <v-list-item-group>
-          <Empl />
-          <Obj />          
+          <Obj />
+          <Empl />                   
           <Wall />
+        <v-subheader>Действия</v-subheader>
         
           <v-list-item>
             <v-list-item-icon>
@@ -62,12 +64,13 @@ import Workers from './components/worker/workers'
 
 import Empl from './components/ref/empl'
 import Obj from './components/ref/obj'
+
 import Wall from './components/ref/wall'
 export default {
   name: 'App',
 
   components: {
-    Workers, Empl, Obj, Wall
+    Workers, Obj, Empl, Wall
   },
   created(){
     this.$root.connectDB(function(db){
