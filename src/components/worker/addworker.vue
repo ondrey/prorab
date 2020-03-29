@@ -115,7 +115,7 @@ export default {
           list.push({
             key_empl: el.value,
             name: el.text,
-            date: this.picker,
+            date: new Date(this.picker),
             start: this.pickertime,
             finish: "",
             comment: this.comment,

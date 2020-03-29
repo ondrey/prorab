@@ -70,7 +70,6 @@
             style="width:20%; margin-left:8px; float:left;"
             ></v-text-field>    
             <v-btn width="100%" color="success" @click="add_click">Добавить</v-btn>
-
         </v-card>
         
 

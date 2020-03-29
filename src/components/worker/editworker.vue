@@ -1,6 +1,6 @@
 <template>
   
-    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" @keydown="refresh_wall_plan">
+    <v-dialog v-model="dialog" fullscreen hide-overlay transition="dialog-bottom-transition" @click="refresh_wall_plan">
       
       <template v-slot:activator="{ on }">
             <v-btn color="success" icon v-on="on">
@@ -14,26 +14,21 @@
           <v-btn icon dark @click="dialog = false">
             <v-icon>mdi-close</v-icon>
           </v-btn>
-          <v-toolbar-title>Редактирование</v-toolbar-title>
+          <v-toolbar-title>{{nameEmp}}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
             <v-btn dark text @click="update"> <v-icon style="color: darkseagreen;">mdi-marker-check</v-icon> Завершить работу</v-btn>
 
           </v-toolbar-items>
         </v-toolbar>
+        <v-row style="margin:15px">
+          <v-col cols="12" sm="3"><v-text-field type="time" v-model="pickertimeStart" outlined label="Время начала"></v-text-field></v-col>
+          <v-col cols="12" sm="3"><v-text-field type="time" v-model="pickertime" outlined label="Время завершения"></v-text-field></v-col>
+          <v-col cols="12" sm="6"><v-text-field v-model="commentFinish" label="Комментарий" outlined></v-text-field></v-col>
 
-        <v-list subheader color="#eaeaea">
-          <v-list-item>
-            <v-list-item-content>
-            <v-list-item-subtitle>
-              Установите время конца рабочего дня, для <strong>{{nameEmp}}</strong>
+        </v-row>
 
-            </v-list-item-subtitle>
-            <v-text-field type="time" v-model="pickertime"></v-text-field>
 
-            </v-list-item-content>
-          </v-list-item>          
-        </v-list>
       
       <AddWall :id_empl="key_empl" :datePlan="datePlan"></AddWall>      
 
@@ -72,7 +67,9 @@ export default {
     data(){
         return {
             dialog: false,
+            pickertimeStart:"09:00",
             pickertime: "17:00",
+            commentFinish: "",
             listWall: [],
             listWall_old: []
         }
@@ -100,6 +97,8 @@ export default {
             if (cursor.value.key == this.key_plan) {
               let curecord = cursor.value
               curecord.finish = this.pickertime
+              curecord.start = this.pickertimeStart
+              curecord.comment = this.commentFinish
               cursor.update(curecord)
               this.dialog = false
               this.$emit('close')
@@ -125,7 +124,7 @@ export default {
           
           const cursor = event.target.result
           if(cursor) {     
-            if (cursor.value.key_empl == this.key_empl)                
+            if (cursor.value.key_empl == this.key_empl)
               this.listWall.push(cursor.value)
             else 
               this.listWall_old.push(cursor.value)
