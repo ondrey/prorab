@@ -1,10 +1,19 @@
 export default{
+    timeStart: "09:00",
+    timeFinish: "18:00",
+
+    cursor(table, func) {
+        this.connectDB(db => {
+            let tx = db.transaction([table], 'readwrite')
+            let empl = tx.objectStore(table)
+            empl.openCursor().onsuccess = func      
+          })
+
+    },
+    
     connectDB(f){
         var request = indexedDB.open("prorab", 1);
 
-        request.onerror = function(err){
-            console.log(err);
-        };
         request.onsuccess = function(){
             // При успешном открытии вызвали коллбэк передав ему объект БД
             f(request.result);
@@ -53,13 +62,7 @@ export default{
             for (let i = 0; i < records.length; i++) {
                 store.put(records[i])                
             }
-            
-            tx.oncomplete = () => {
-                console.log('close')
-            }
-            tx.onerror = (event) => {
-                console.log(event)
-            }                
+                            
         })
     }
 

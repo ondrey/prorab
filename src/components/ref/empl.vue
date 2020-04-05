@@ -24,7 +24,7 @@
         </v-toolbar-items>
         </v-toolbar>
       
-        <v-card style="margin:10px; background-color: greenyellow; padding:8px">
+        <v-card style="margin:10px; background-color: honeydew; padding:8px">
             <v-text-field
             v-model="familiya"
             label="Фамилия"

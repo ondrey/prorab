@@ -22,32 +22,74 @@
           </v-toolbar-items>
         </v-toolbar>
         <v-row style="margin:15px">
-          <v-col cols="12" sm="3"><v-text-field type="time" v-model="pickertimeStart" outlined label="Время начала"></v-text-field></v-col>
-          <v-col cols="12" sm="3"><v-text-field type="time" v-model="pickertime" outlined label="Время завершения"></v-text-field></v-col>
-          <v-col cols="12" sm="6"><v-text-field v-model="commentFinish" label="Комментарий" outlined></v-text-field></v-col>
+          
+            <v-col cols="12" sm="3"><v-switch v-model="epsent" label="Отсутствует"></v-switch></v-col>
 
+            <v-col cols="12" sm="9" v-if="epsent"><v-text-field v-model="commentFinish" label="Комментарий" outlined></v-text-field></v-col>                  
+            
+            <template v-else>
+              <v-col cols="12" sm="5" >
+                <v-text-field type="time" v-model="pickertimeStart" outlined label="Время начала"></v-text-field>
+              </v-col>
+              <v-col cols="12" sm="4" >
+                <v-text-field type="time" v-model="pickertime" outlined label="Время завершения"></v-text-field>
+              </v-col>
+            </template>
+
+            
         </v-row>
+        
+        <AddWall :id_empl="key_empl" :datePlan="datePlan" @onAddWall="refresh_wall_plan"></AddWall>
 
-
+    <table width="90%" v-for="k in listWall" :key="k.key" border="0" cellpadding="0" cellspacing="0"
+    style="margin: 15px auto;box-shadow: 2px 2px 4px 1px #c1c1c1;padding: 5px;border-radius: 3px;">
       
-      <AddWall :id_empl="key_empl" :datePlan="datePlan"></AddWall>      
+      <tr>
+        <td colspan="3" align="left" width="75%">
+          <strong>  <v-icon>mdi-floor-plan</v-icon>{{ k.id_wall }} / {{ k.etaj }}</strong>
+        </td>
+        <td align="right" width="25%">
+          <EditWall :id_plan="k.key" @onUpdatePlanWall="refresh_wall_plan"/>
+        </td>
+      </tr>
+      <tr>
+        <td width="25%">{{k.start}}</td>        
+        <td width="25%">{{ Boolean(k.finish) ? k.finish : 'В работе'}}</td>
+        <td width="25%"><v-icon>mdi-finance</v-icon>{{ k.coiff }}</td>
+        <td width="25%" align="right"> 
+          <strong style="color: darkgoldenrod;">{{ Boolean(k.fact) ? k.fact+' ч.ч.' : '' }}</strong> 
+          {{ k.chch }} н.ч.
+        </td>
+      </tr>
+    </table>
+      
+      
+      <h3 style="      
+      margin: 25px;
+      color: cadetblue;">КТУ меньше 1:</h3>      
 
-      <v-list rounded>
-        <v-list-item v-for="k in listWall" :key="k.key">
-          <v-list-item-content>
-            {{k.text_object}} / {{k.text_wall}}
-            <v-list-item-subtitle>
-              {{k.start}} / {{k.finish}}
-            </v-list-item-subtitle>
-          </v-list-item-content>
-
-        <v-list-item-action>
-          <v-list-item-action-text>{{k.datePlan}}</v-list-item-action-text>         
-          <EditWall />
-        </v-list-item-action>
-        </v-list-item>
-
-      </v-list>
+    <table width="90%" v-for="ktu in listWall_old" :key="'00'+ktu.key" 
+           border="0" cellpadding="0" cellspacing="0"
+           style="margin: 15px auto;box-shadow: 2px 2px 4px 1px #c1c1c1;padding: 5px;border-radius: 3px; background-color:gold;">
+      
+      <tr>
+        <td colspan="3" align="left" width="75%">
+          <strong>  <v-icon>mdi-floor-plan</v-icon>{{ ktu.id_wall }} / {{ ktu.etaj }}</strong>
+        </td>
+        <td align="right" width="25%">
+          {{ktu.datePlan.toLocaleDateString()}}
+        </td>
+      </tr>
+      <tr>
+        <td width="25%"> {{ktu.start}}</td>        
+        <td width="25%">{{ Boolean(ktu.finish) ? ktu.finish : 'В работе'}}</td>
+        <td width="25%"><v-icon>mdi-finance</v-icon>{{ ktu.coiff }}</td>
+        <td width="25%" align="right"> 
+          <strong style="color: darkgoldenrod;">{{ Boolean(ktu.fact) ? ktu.fact+' ч.ч.' : '' }}</strong> 
+          {{ ktu.chch }} н.ч.
+        </td>
+      </tr>
+    </table>          
 
       </v-card>
 
@@ -59,19 +101,21 @@
 <script>
 import AddWall from "../wall/addwall";
 import EditWall from '../wall/editwall';
+
 export default {
     components:{
       AddWall, EditWall
     },
     props: ['nameEmp', 'key_empl', 'datePlan', 'key_plan'],
     data(){
-        return {
+        return {            
             dialog: false,
-            pickertimeStart:"09:00",
-            pickertime: "17:00",
+            pickertimeStart:this.$root.timeStart,
+            pickertime: this.$root.timeFinish,
             commentFinish: "",
             listWall: [],
-            listWall_old: []
+            listWall_old: [],
+            epsent: false
         }
     },
     watch: {
@@ -99,6 +143,7 @@ export default {
               curecord.finish = this.pickertime
               curecord.start = this.pickertimeStart
               curecord.comment = this.commentFinish
+              curecord.epsent = this.epsent
               cursor.update(curecord)
               this.dialog = false
               this.$emit('close')
@@ -124,16 +169,16 @@ export default {
           
           const cursor = event.target.result
           if(cursor) {     
-            if (cursor.value.key_empl == this.key_empl)
-              this.listWall.push(cursor.value)
-            else 
-              this.listWall_old.push(cursor.value)
-
+            if (cursor.value.key_empl == this.key_empl)              
+              if(this.datePlan.toLocaleDateString() == cursor.value.datePlan.toLocaleDateString() ) {                  
+                  this.listWall.push(cursor.value);                  
+              }
+              if (Number(cursor.value.coiff) < 1) {
+                this.listWall_old.push(cursor.value);
+              }
             cursor.continue()
           }            
         }
-
-
     }
 }
     

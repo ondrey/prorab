@@ -24,79 +24,64 @@
         </v-toolbar-items>
         </v-toolbar>
       
-        <v-card style="margin:10px; background-color: greenyellow; padding:8px">
+        <v-card style="margin:10px; background-color: honeydew; padding:8px">
             <v-text-field
             v-model="liter"
             label="Литер"
             type="number"
-            style="width:30%; margin-left:8px; float:left;"
-            ></v-text-field>            
+            style="width:80px; margin-left:8px; float:left;"
+            ></v-text-field>
             <v-text-field
             v-model="bloksec"
             label="Блок-секция"
             type="number"
-            style="width:30%; margin-left:8px; float:left;"
+            style="width:118px; margin-left:8px; float:left;"
             ></v-text-field>
 
             <v-text-field
             v-model="wallnum"
             label="Стена"
             type="number"
-            style="width:30%; margin-left:8px; float:left;"
-            ></v-text-field>
-      <br />
-            <v-text-field
-            v-model="vstoun"
-            label="Кол-во кирпича"
-            type="number"
-            style="width:20%; margin-left:8px; float:left;"
-            ></v-text-field>              
-            <v-text-field
-            v-model="v2"
-            label="М2"
-            type="number"
-            style="width:20%; margin-left:8px; float:left;"
-            ></v-text-field>          
-            <v-text-field
-            v-model="v3"
-            label="М3"
-            type="number"
-            style="width:20%; margin-left:8px; float:left;"
-            ></v-text-field>                   
+            style="width:80px; margin-left:8px; float:left;"
+            ></v-text-field>                             
             <v-text-field
             v-model="chch"
             label="Норма. часов"
             type="number"
-            style="width:20%; margin-left:8px; float:left;"
+            style="width:115px; margin-left:8px; float:left;"
             ></v-text-field>    
             <v-btn width="100%" color="success" @click="add_click">Добавить</v-btn>
         </v-card>
         
 
-
-      <v-list>
-        <v-list-item v-for="k in list" :key="k.id">
-          <v-list-item-content>
-            Литер:{{k.liter}} / Блок-секция:{{k.bloksec}} / Стена № {{k.wallnum}} 
-            <v-list-item-subtitle>
-            {{k.vstoun}} шт., {{k.v2}} м2., {{k.v3}} м3., {{k.chch}} чч.. 
-            </v-list-item-subtitle>
-          </v-list-item-content>
-
-        <v-list-item-action>
-                    
-          <v-btn icon @click="del_rec(k.id)">
-            <v-icon color="red">mdi-delete-alert-outline</v-icon>
-          </v-btn>
-
-        </v-list-item-action>
-
-        </v-list-item>
-
-      </v-list>
+        <v-simple-table dense>
+            <template v-slot:default>
+              <thead>
+                <tr>
+                  <th class="text-left">Литер</th>
+                  <th class="text-left">Блок-секция</th>
+                  <th class="text-left">Стена</th>
+                  <th class="text-left">Норма часов</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr  v-for="k in list" :key="k.id">
+                  <td>{{k.liter}}</td>
+                  <td>{{k.bloksec}}</td>
+                  <td>{{k.wallnum}}</td>
+                  <td>{{k.chch}}</td>
+                  <td>
+                    <v-btn icon @click="del_rec(k.id)">
+                    <v-icon color="red">mdi-delete-alert-outline</v-icon>
+                  </v-btn>
+                  </td>
+                </tr>
+              </tbody>
+            </template>
+          </v-simple-table>
 
       </v-card>
-
     </v-dialog>
 
 </template>
@@ -107,6 +92,7 @@ export default {
     
     data(){
         return {
+            
             dialog: false,
             list: [],
             liter: null,
@@ -119,15 +105,22 @@ export default {
             chch: null
         }
     },
-    methods:{      
+    methods:{   
+      compare( a, b ) {
+        if ( Number(a.liter) < Number(b.liter) ){
+          return -1;
+        }
+        if ( Number(a.liter) > Number(b.liter) ){
+          return 1;
+        }
+        return 0;
+      },      
+      
       add_click(){        
         this.$root.add_record('Walls',[
           {liter: this.liter, 
           bloksec: this.bloksec, 
           wallnum: this.wallnum, 
-          vstoun: this.vstoun,
-          v2: this.v2,
-          v3: this.v3,
           chch: this.chch
           },
         ]) 
@@ -142,15 +135,13 @@ export default {
             liter:cursor.value.liter, 
             bloksec:cursor.value.bloksec, 
             wallnum:cursor.value.wallnum,
-
-            vstoun:cursor.value.vstoun,
-            v2:cursor.value.v2,
-            v3:cursor.value.v3,
             chch:cursor.value.chch
             })   
 
           cursor.continue()
-        }  
+        } else {
+          this.list.sort(this.compare);
+        }               
       },
       del_rec(idnum){        
         if (confirm("Удалить выбранную запись?")){

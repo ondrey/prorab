@@ -31,20 +31,8 @@
           <Empl />                   
           <Wall />
         <v-subheader>Действия</v-subheader>
-        
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-file-excel</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Выгрузить в excel</v-list-item-title>
-          </v-list-item>
 
-          <v-list-item>
-            <v-list-item-icon>
-              <v-icon>mdi-trash-can-outline</v-icon>
-            </v-list-item-icon>
-            <v-list-item-title>Очистить списки</v-list-item-title>
-          </v-list-item>          
+          <emplMonth />
 
         </v-list-item-group>
       </v-list>
@@ -64,13 +52,14 @@ import Workers from './components/worker/workers'
 
 import Empl from './components/ref/empl'
 // import Obj from './components/ref/obj'
+import emplMonth from './components/reports/emplMonth'
 
 import Wall from './components/ref/wall'
 export default {
   name: 'App',
 
   components: {
-    Workers,  Empl, Wall
+    Workers,  Empl, Wall, emplMonth
   },
   created(){
     this.$root.connectDB(function(db){
