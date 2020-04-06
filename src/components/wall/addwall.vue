@@ -3,8 +3,8 @@
     <v-dialog v-model="dialog">
       
       <template v-slot:activator="{ on }">
-            <v-btn color="success" outlined  v-on="on" style="width: 250px;margin: 5px auto;display: block;">
-                <v-icon>mdi-arrow-down-bold-box</v-icon> Стена на сегодня
+            <v-btn color="success" outlined  v-on="on" style="margin: 18px; float:right; display: block;">
+                <v-icon>mdi-plus-box</v-icon> Работа
             </v-btn>
       </template>
 

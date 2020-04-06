@@ -8,10 +8,6 @@
     font-size: x-large;
     ">Табель <strong style="color:blue;">{{curDate.toLocaleDateString()}}</strong></span>
 
-    <v-btn color="success" @click="get_list" icon style="margin:8px;">
-        <v-icon>mdi-refresh</v-icon> 
-    </v-btn>
-
     <!-- <AddWorker @close="get_list"></AddWorker> -->
   </div>
   

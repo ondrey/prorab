@@ -7,7 +7,7 @@ module.exports = {
     name: 'stroyka-uga'
   },
 
-  //publicPath: '/stroyka-uga.github.io/',
+  publicPath: '/stroyka-uga.github.io/',
   productionSourceMap: false,
   outputDir: 'C:\\stroyka-uga.github.io'
 }

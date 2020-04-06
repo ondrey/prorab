@@ -17,11 +17,11 @@
           <v-toolbar-title>{{nameEmp}}</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-toolbar-items>
-            <v-btn dark text @click="update"> <v-icon style="color: darkseagreen;">mdi-marker-check</v-icon> Завершить работу</v-btn>
+            <v-btn dark text @click="update"> <v-icon style="color: white;">mdi-marker-check</v-icon> Завершить работу</v-btn>
 
           </v-toolbar-items>
         </v-toolbar>
-        <v-row style="margin:15px">
+        <v-row style="margin:15px;">
           
             <v-col cols="12" sm="3"><v-switch v-model="epsent" label="Отсутствует"></v-switch></v-col>
 
@@ -38,8 +38,12 @@
 
             
         </v-row>
-        
-        <AddWall :id_empl="key_empl" :datePlan="datePlan" @onAddWall="refresh_wall_plan"></AddWall>
+      
+      <AddWall :id_empl="key_empl" :datePlan="datePlan" @onAddWall="refresh_wall_plan"></AddWall>
+      <br>
+      <h3 style="      
+      margin: 25px;
+      color: cadetblue;">Сегодня :</h3>          
 
     <table width="90%" v-for="k in listWall" :key="k.key" border="0" cellpadding="0" cellspacing="0"
     style="margin: 15px auto;box-shadow: 2px 2px 4px 1px #c1c1c1;padding: 5px;border-radius: 3px;">
@@ -62,11 +66,16 @@
         </td>
       </tr>
     </table>
-      
+
+      <h3 style="      
+      margin: 25px;
+      color: cadetblue;">Отчет :</h3>  
+      <p style="text-align:right; margin-right:25px">(В прошлом месяце / на текущий момент)</p>
+      <Report :id_empl="key_empl" />
       
       <h3 style="      
       margin: 25px;
-      color: cadetblue;">КТУ меньше 1:</h3>      
+      color: cadetblue;">Штрафы:</h3>      
 
     <table width="90%" v-for="ktu in listWall_old" :key="'00'+ktu.key" 
            border="0" cellpadding="0" cellspacing="0"
@@ -101,14 +110,15 @@
 <script>
 import AddWall from "../wall/addwall";
 import EditWall from '../wall/editwall';
+import Report from '../wall/report';
 
 export default {
     components:{
-      AddWall, EditWall
+      AddWall, EditWall, Report
     },
     props: ['nameEmp', 'key_empl', 'datePlan', 'key_plan'],
     data(){
-        return {            
+        return {       
             dialog: false,
             pickertimeStart:this.$root.timeStart,
             pickertime: this.$root.timeFinish,
@@ -137,7 +147,7 @@ export default {
         update_cursor(event){
           const cursor = event.target.result
           if(cursor) {    
-            console.log(cursor.value.key , this.key_plan)
+            
             if (cursor.value.key == this.key_plan) {
               let curecord = cursor.value
               curecord.finish = this.pickertime
@@ -163,19 +173,22 @@ export default {
             let PlanWall = tx.objectStore('PlanWall')
             
             PlanWall.openCursor().onsuccess = this.get_list_wall_plan
-            })            
+            })                     
         },
         get_list_wall_plan(){
           
           const cursor = event.target.result
           if(cursor) {     
-            if (cursor.value.key_empl == this.key_empl)              
+            if (cursor.value.key_empl == this.key_empl) {
               if(this.datePlan.toLocaleDateString() == cursor.value.datePlan.toLocaleDateString() ) {                  
                   this.listWall.push(cursor.value);                  
               }
               if (Number(cursor.value.coiff) < 1) {
                 this.listWall_old.push(cursor.value);
               }
+            }
+              
+              
             cursor.continue()
           }            
         }
